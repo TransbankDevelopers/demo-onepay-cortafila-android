@@ -4,4 +4,10 @@
     <color name="colorPrimaryDark">#7B1FA2</color>
     <color name="colorAccent">#E040FB</color>
     <color name="buttonPressed">#FFB74D</color>
+    <color name="normalButton">#D6D7D7</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="backgroundOnepay">#fcb131</color>
+
 </resources>
