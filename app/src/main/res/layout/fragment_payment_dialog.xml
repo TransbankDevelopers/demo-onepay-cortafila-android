@@ -66,13 +66,15 @@
                 android:id="@+id/title_textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:text="@string/title_payment"
                 android:textAlignment="center"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/qr_imageView"
@@ -90,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:text="1234 - 5678"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/qr_imageView" />
@@ -101,6 +104,7 @@
                 android:layout_marginStart="43dp"
                 android:layout_marginLeft="43dp"
                 android:layout_marginTop="7dp"
+                android:textColor="@color/black"
 
                 android:text="Código de compra"
                 app:layout_constraintStart_toStartOf="@+id/qr_imageView"
@@ -112,14 +116,16 @@
             style="@android:style/Widget.DeviceDefault.Light.Button.Borderless.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginRight="32dp"
+            android:layout_marginBottom="20dp"
 
             android:text="No pagar y volver"
             android:textColor="@android:color/holo_red_dark"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/payment_constraintLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/payment_constraintLayout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     </android.support.constraint.ConstraintLayout>
