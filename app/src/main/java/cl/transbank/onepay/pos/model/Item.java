@@ -62,5 +62,6 @@ public class Item implements Parcelable {
         dest.writeInt(quantity);
         dest.writeInt(amount);
         dest.writeString(additionalData);
+        dest.writeInt(expire);
     }
 }
