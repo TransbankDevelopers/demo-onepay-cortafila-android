@@ -1,11 +1,14 @@
 package cl.transbank.onepay.pos.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -100,6 +103,14 @@ public class PaymentDialogFragment extends DialogFragment {
         } catch(Exception e) {
 
         }
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showQR();
+            }
+        }, 2000);
+
         return inflatedView;
     }
 
@@ -129,5 +140,31 @@ public class PaymentDialogFragment extends DialogFragment {
 
     public interface OnFragmentInteractionListener {
         void onPaymentDone(Integer result);
+    }
+
+    private void showQR(){
+        int mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
+        View mContentView = getView().findViewById(R.id.payment_constraintLayout);
+        final View mLoadingView = getView().findViewById(R.id.loading_constraintLayout);
+
+        mContentView.setAlpha(0f);
+        mContentView.setVisibility(View.VISIBLE);
+
+        mContentView.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+
+        mLoadingView.animate()
+                .alpha(0f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mLoadingView.setVisibility(View.GONE);
+                    }
+                });
     }
 }
