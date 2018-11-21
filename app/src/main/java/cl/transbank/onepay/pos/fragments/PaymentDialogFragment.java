@@ -51,25 +51,6 @@ public class PaymentDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    /*
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("hola");
-        builder.setNegativeButton("Cancelar pago", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setView(dialog);
-
-        return super.onCreateDialog(savedInstanceState);
-    }
-    */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
