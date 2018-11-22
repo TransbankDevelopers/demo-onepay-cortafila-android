@@ -13,7 +13,7 @@ public class HTTPClient {
         json.addProperty("token", token);
 
         Ion.with(context)
-                .load("http://7fe59832.ngrok.io/setup/register")
+                .load("http://2b31b8d7.ngrok.io/setup/register")
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {

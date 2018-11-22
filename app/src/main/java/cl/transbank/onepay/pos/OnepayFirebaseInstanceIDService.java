@@ -17,13 +17,7 @@ import cl.transbank.onepay.pos.utils.HTTPClient;
 public class OnepayFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
-        // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("POS", "Refreshed token: " + refreshedToken);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
         HTTPClient.sendRegistrationToServer(refreshedToken, this);
     }
 }
