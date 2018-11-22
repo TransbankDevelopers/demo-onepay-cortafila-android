@@ -18,6 +18,6 @@ public class OnepayFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        HTTPClient.sendRegistrationToServer(refreshedToken, this);
+        HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
     }
 }

@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         FirebaseApp.initializeApp(this);
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        HTTPClient.sendRegistrationToServer(refreshedToken, this);
+        HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
 
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setCafePrice(1500);
