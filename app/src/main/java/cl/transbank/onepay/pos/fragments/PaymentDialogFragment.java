@@ -85,7 +85,7 @@ public class PaymentDialogFragment extends DialogFragment {
             }
         });
 
-        HTTPClient.createTransaction(null, getContext(), new HTTPClient.HTTPClientListener() {
+        HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
             @Override
             public void onCompleted(JsonObject result) {
                 showQR("12345678", inflatedView);

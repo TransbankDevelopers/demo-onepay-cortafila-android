@@ -11,9 +11,12 @@ import android.view.View;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.ArrayList;
+
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.databinding.ActivityMainBinding;
 import cl.transbank.onepay.pos.fragments.PaymentDialogFragment;
+import cl.transbank.onepay.pos.model.Item;
 import cl.transbank.onepay.pos.utils.HTTPClient;
 
 public class MainActivity extends AppCompatActivity implements PaymentDialogFragment.OnFragmentInteractionListener {
@@ -41,7 +44,15 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getSupportFragmentManager();
+
+                ArrayList<Item> items = new ArrayList<>();
+
+                Item item = new Item("Sandwich", 1, 1500, null, 0);
+
+                items.add(item);
+
                 PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(null);
+
                 paymentDialogFragment.show(fm, "fragment_edit_name");
             }
         });

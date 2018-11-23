@@ -9,6 +9,14 @@ public class Item implements Parcelable {
     private Integer amount;
     private String additionalData;
 
+    public Item(String description, Integer quantity, Integer amount, String additionalData, Integer expire) {
+        this.description = description;
+        this.quantity = quantity;
+        this.amount = amount;
+        this.additionalData = additionalData;
+        this.expire = expire;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -52,16 +60,45 @@ public class Item implements Parcelable {
     private Integer expire;
 
     @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(description);
+        if (quantity == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(quantity);
+        }
+        if (amount == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(amount);
+        }
+        dest.writeString(additionalData);
+    }
+
+    protected Item(Parcel in) {
+        description = in.readString();
+        quantity = in.readByte() == 0x00 ? null : in.readInt();
+        amount = in.readByte() == 0x00 ? null : in.readInt();
+        additionalData = in.readString();
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(description);
-        dest.writeInt(quantity);
-        dest.writeInt(amount);
-        dest.writeString(additionalData);
-        dest.writeInt(expire);
-    }
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        @Override
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
+        }
+
+        @Override
+        public Item[] newArray(int size) {
+            return new Item[size];
+        }
+    };
 }

@@ -2,6 +2,8 @@ package cl.transbank.onepay.pos.utils;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -12,7 +14,7 @@ import cl.transbank.onepay.pos.model.Item;
 
 public class HTTPClient {
 
-    static String BASE_URL = "http://2b31b8d7.ngrok.io";
+    static String BASE_URL = "http://be3ff354.ngrok.io";
 
     public interface HTTPClientListener {
         public void onCompleted(JsonObject result);
@@ -42,7 +44,11 @@ public class HTTPClient {
         JsonObject json = new JsonObject();
         String deviceid = DeviceUUID.getUUID(context);
 
+        Gson gson = new Gson();
+        JsonElement jsonElement = gson.toJsonTree(mItems);
+
         json.addProperty("deviceid", DeviceUUID.getUUID(context));
+        json.add("items", jsonElement);
 
         Ion.with(context)
                 .load(BASE_URL + "/transaction/"+ deviceid + "/create")
