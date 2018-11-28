@@ -47,11 +47,13 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 ArrayList<Item> items = new ArrayList<>();
 
-                Item item = new Item("Sandwich", 1, 1500, null, 0);
+                Item item1 = new Item("Sandwich", 1, 3000, null, 0);
+                Item item2 = new Item("Cafe", 1, 1500, null, 0);
 
-                items.add(item);
+                items.add(item1);
+                items.add(item2);
 
-                PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(null);
+                PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
 
                 paymentDialogFragment.show(fm, "fragment_edit_name");
             }
