@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.google.zxing.BarcodeFormat;
@@ -37,6 +38,7 @@ import java.util.List;
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.model.Item;
 import cl.transbank.onepay.pos.utils.HTTPClient;
+import cl.transbank.onepay.pos.utils.StringFormatter;
 
 public class PaymentDialogFragment extends DialogFragment {
     private static final String ARG_ITEMS = "items";
@@ -75,7 +77,7 @@ public class PaymentDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setCancelable(false);
+
         final View inflatedView = inflater.inflate(R.layout.fragment_payment_dialog, container, false);
         Button cancelButton = inflatedView.findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +96,6 @@ public class PaymentDialogFragment extends DialogFragment {
 
         return inflatedView;
     }
-
 
     public void onPaymentDone(Integer result) {
         if (mListener != null) {
@@ -155,8 +156,13 @@ public class PaymentDialogFragment extends DialogFragment {
         int mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
 
-        View mContentView = getView().findViewById(R.id.payment_constraintLayout);
-        final View mLoadingView = getView().findViewById(R.id.loading_constraintLayout);
+        View currentView = getView();
+
+        TextView ottTextView = currentView.findViewById(R.id.buycode_textView);
+
+        ottTextView.setText(StringFormatter.formatOtt(ott));
+        View mContentView = currentView.findViewById(R.id.payment_constraintLayout);
+        final View mLoadingView = currentView.findViewById(R.id.loading_constraintLayout);
 
         mContentView.setAlpha(0f);
         mContentView.setVisibility(View.VISIBLE);
