@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
 
         final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setCafePrice(3);
-        binding.setMedialunaPrice(3);
+        binding.setCafePrice(1);
+        binding.setMedialunaPrice(2);
         binding.setSandwichPrice(3);
-        binding.setMuffinPrice(3);
+        binding.setMuffinPrice(4);
 
         initializeUI(binding);
 

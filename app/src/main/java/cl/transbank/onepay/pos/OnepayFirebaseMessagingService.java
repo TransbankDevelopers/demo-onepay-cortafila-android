@@ -8,18 +8,17 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.HashMap;
+
 public class OnepayFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d("POS", remoteMessage.getCollapseKey());
-        Log.d("POS", remoteMessage.getFrom());
-        Log.d("POS", remoteMessage.getMessageId());
-        Log.d("POS", remoteMessage.getNotification().getTitle());
-        Log.d("POS", remoteMessage.getNotification().getBody());
+        Log.d("POS", "data: "+ remoteMessage.getData());
 
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent("transaction_result");
+        intent.putExtra("data",  new HashMap(remoteMessage.getData()));
         localBroadcastManager.sendBroadcast(intent);
     }
 }

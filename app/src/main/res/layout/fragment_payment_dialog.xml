@@ -109,6 +109,31 @@
                 android:text="Código de compra"
                 app:layout_constraintStart_toStartOf="@+id/qr_imageView"
                 app:layout_constraintTop_toBottomOf="@+id/buycode_textView" />
+
+            <ProgressBar
+                android:id="@+id/waiting_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:progress="100"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                app:layout_constraintTop_toBottomOf="@id/buycodelabel_textView"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tienes 30 segundos para efectuar el pago"
+                app:layout_constraintTop_toBottomOf="@id/waiting_progress_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+
         </android.support.constraint.ConstraintLayout>
 
         <Button

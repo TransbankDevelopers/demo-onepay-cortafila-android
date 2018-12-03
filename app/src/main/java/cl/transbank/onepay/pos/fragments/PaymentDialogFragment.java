@@ -2,6 +2,7 @@ package cl.transbank.onepay.pos.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -24,8 +26,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
@@ -33,6 +38,7 @@ import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import cl.transbank.onepay.pos.R;
@@ -48,6 +54,10 @@ public class PaymentDialogFragment extends DialogFragment {
     private OnFragmentInteractionListener mListener;
 
     BroadcastReceiver br;
+
+    private String mOcc;
+    private String mExternalUniqueNumber;
+    private CountDownTimer mCountDownTimer;
 
     public PaymentDialogFragment() {
         // Required empty public constructor
@@ -90,7 +100,45 @@ public class PaymentDialogFragment extends DialogFragment {
         HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
             @Override
             public void onCompleted(JsonObject result) {
+                mOcc = result.getAsJsonPrimitive("occ").getAsString();
+                mExternalUniqueNumber = result.getAsJsonPrimitive("externalUniqueNumber").getAsString();
                 showQR(result.getAsJsonPrimitive("ott").getAsString(), inflatedView);
+
+                final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
+
+                final int totalTime = 30000;
+                waitingProgressBar.setMax(30000);
+                waitingProgressBar.setProgress(30000);
+
+                final Animator smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", 30000, 0);
+
+                smoothAnimation.setDuration(30000);
+                smoothAnimation.setInterpolator(new LinearInterpolator());
+
+
+                mCountDownTimer = new CountDownTimer(totalTime, 300) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        Log.d("POS", String.valueOf(millisUntilFinished));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        waitingProgressBar.setProgress(0);
+                        dismiss();
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("¡Ups!")
+                                .setMessage("Ha transcurrido el tiempo límite para hacer el pago, inténtalo nuevamente.")
+                                .setNegativeButton("Okey", null)
+                                .show();
+
+                        Log.d("POS", "finished");
+                        smoothAnimation.end();
+
+                    }
+                }.start();
+                smoothAnimation.start();
+
             }
         });
 
@@ -118,6 +166,9 @@ public class PaymentDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -130,6 +181,7 @@ public class PaymentDialogFragment extends DialogFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.d("POS", "transaction_result");
+                HashMap data = (HashMap) intent.getSerializableExtra("data");
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(br, new IntentFilter(("transaction_result")));

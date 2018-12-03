@@ -14,7 +14,7 @@ import cl.transbank.onepay.pos.model.Item;
 
 public class HTTPClient {
 
-    static String BASE_URL = "http://b1dbb382.ngrok.io";
+    static String BASE_URL = "http://059b5cf6.ngrok.io";
 
     public interface HTTPClientListener {
         public void onCompleted(JsonObject result);
