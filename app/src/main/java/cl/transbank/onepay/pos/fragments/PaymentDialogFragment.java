@@ -106,20 +106,19 @@ public class PaymentDialogFragment extends DialogFragment {
 
                 final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
-                final int totalTime = 30000;
-                waitingProgressBar.setMax(30000);
-                waitingProgressBar.setProgress(30000);
+                final int totalTime = 90000;
+                waitingProgressBar.setMax(totalTime);
+                waitingProgressBar.setProgress(totalTime);
 
-                final Animator smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", 30000, 0);
+                final Animator smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTime, 0);
 
-                smoothAnimation.setDuration(30000);
+                smoothAnimation.setDuration(totalTime);
                 smoothAnimation.setInterpolator(new LinearInterpolator());
-
 
                 mCountDownTimer = new CountDownTimer(totalTime, 300) {
                     @Override
                     public void onTick(long millisUntilFinished) {
-                        Log.d("POS", String.valueOf(millisUntilFinished));
+
                     }
 
                     @Override
@@ -132,7 +131,6 @@ public class PaymentDialogFragment extends DialogFragment {
                                 .setNegativeButton("Okey", null)
                                 .show();
 
-                        Log.d("POS", "finished");
                         smoothAnimation.end();
 
                     }
@@ -182,6 +180,8 @@ public class PaymentDialogFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
                 Log.d("POS", "transaction_result");
                 HashMap data = (HashMap) intent.getSerializableExtra("data");
+
+                Log.d("POS", data.toString());
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(br, new IntentFilter(("transaction_result")));

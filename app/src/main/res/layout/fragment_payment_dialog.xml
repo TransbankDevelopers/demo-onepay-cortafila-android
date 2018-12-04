@@ -127,7 +127,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tienes 30 segundos para efectuar el pago"
+                android:text="Tienes 1 minuto y medio para efectuar el pago"
                 app:layout_constraintTop_toBottomOf="@id/waiting_progress_bar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
