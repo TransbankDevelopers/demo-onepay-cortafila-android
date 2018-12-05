@@ -3,22 +3,14 @@ package cl.transbank.onepay.pos.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -26,20 +18,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.google.gson.JsonObject;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.model.Item;
@@ -58,6 +46,7 @@ public class PaymentDialogFragment extends DialogFragment {
     private String mOcc;
     private String mExternalUniqueNumber;
     private CountDownTimer mCountDownTimer;
+    private Animator smoothAnimation;
 
     public PaymentDialogFragment() {
         // Required empty public constructor
@@ -110,7 +99,7 @@ public class PaymentDialogFragment extends DialogFragment {
                 waitingProgressBar.setMax(totalTime);
                 waitingProgressBar.setProgress(totalTime);
 
-                final Animator smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTime, 0);
+                smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTime, 0);
 
                 smoothAnimation.setDuration(totalTime);
                 smoothAnimation.setInterpolator(new LinearInterpolator());
@@ -180,6 +169,13 @@ public class PaymentDialogFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
                 Log.d("POS", "transaction_result");
                 HashMap data = (HashMap) intent.getSerializableExtra("data");
+                String paymentDescription = (String) data.get("description");
+
+                if (paymentDescription != null && paymentDescription.equals("OK")){
+                    showPaymentInfo();
+                } else {
+                    showError();
+                }
 
                 Log.d("POS", data.toString());
             }
@@ -195,11 +191,76 @@ public class PaymentDialogFragment extends DialogFragment {
         super.onPause();
     }
 
+
+    private void showError() {
+        if (smoothAnimation != null)
+            smoothAnimation.cancel();
+        if (mCountDownTimer != null)
+            mCountDownTimer.cancel();
+
+        View currentView = getView();
+        View mPaidView = currentView.findViewById(R.id.error_constraintLayout);
+        final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
+
+        mPaidView.setAlpha(0f);
+        mPaidView.setVisibility(View.VISIBLE);
+
+        int mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
+        mPaidView.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+
+        mPaymentView.animate()
+                .alpha(0f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mPaymentView.setVisibility(View.INVISIBLE);
+                    }
+                });
+    }
+
+    private void showPaymentInfo() {
+        if (smoothAnimation != null)
+            smoothAnimation.cancel();
+        if (mCountDownTimer != null)
+            mCountDownTimer.cancel();
+
+        View currentView = getView();
+        View mPaidView = currentView.findViewById(R.id.paid_constraintLayout);
+        final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
+
+        mPaidView.setAlpha(0f);
+        mPaidView.setVisibility(View.VISIBLE);
+
+        int mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_longAnimTime);
+
+        mPaidView.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
+
+        mPaymentView.animate()
+                .alpha(0f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mPaymentView.setVisibility(View.INVISIBLE);
+                    }
+                });
+    }
+
     private void showQR(String ott, View inflatedView){
         try {
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.encodeBitmap("onepay=ott:" + ott, BarcodeFormat.QR_CODE, 400, 400);
-            ImageView imageViewQrCode = (ImageView) inflatedView.findViewById(R.id.qr_imageView);
+            ImageView imageViewQrCode = inflatedView.findViewById(R.id.qr_imageView);
             imageViewQrCode.setImageBitmap(bitmap);
         } catch(Exception e) {
 

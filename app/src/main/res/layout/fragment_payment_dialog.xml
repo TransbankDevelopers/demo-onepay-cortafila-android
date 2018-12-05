@@ -7,6 +7,7 @@
     tools:context=".fragments.PaymentDialogFragment">
 
     <android.support.constraint.ConstraintLayout
+
         android:layout_width="550dp"
         android:layout_height="match_parent">
 
@@ -22,6 +23,97 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/paid_constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@+id/payment_constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/payment_constraintLayout"
+            app:layout_constraintStart_toStartOf="@+id/payment_constraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/payment_constraintLayout">
+            >
+
+            <ImageView
+                android:id="@+id/tick_imageview"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/green_tick"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/paymentsuccess_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="¡El pago se realizó de forma exitósa!"
+                android:textSize="20sp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tick_imageview"
+                />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Número de compra: 1234567890"
+                android:textSize="20sp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/paymentsuccess_textview"
+                />
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/error_constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@+id/payment_constraintLayout"
+            app:layout_constraintEnd_toEndOf="@+id/payment_constraintLayout"
+            app:layout_constraintStart_toStartOf="@+id/payment_constraintLayout"
+            app:layout_constraintTop_toTopOf="@+id/payment_constraintLayout">
+            >
+
+            <ImageView
+                android:id="@+id/error_imageview"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/error"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Ha ocurrido un error al intentar procesar tu pago, reinténtalo nuevamente"
+                android:textSize="20sp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/error_imageview"
+                />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:visibility="visible"
             android:id="@+id/loading_constraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
