@@ -234,6 +234,8 @@ public class PaymentDialogFragment extends DialogFragment {
         View mPaidView = currentView.findViewById(R.id.paid_constraintLayout);
         final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
 
+        TextView mExternalUniqueNumberTextView = currentView.findViewById(R.id.external_unique_number_textview);
+        mExternalUniqueNumberTextView.setText("Número de compra: "+ mExternalUniqueNumber);
         mPaidView.setAlpha(0f);
         mPaidView.setVisibility(View.VISIBLE);
 
