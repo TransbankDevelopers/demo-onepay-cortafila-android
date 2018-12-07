@@ -5,11 +5,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.security.keystore.StrongBoxUnavailableException;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -47,6 +49,8 @@ public class PaymentDialogFragment extends DialogFragment {
     private String mExternalUniqueNumber;
     private CountDownTimer mCountDownTimer;
     private Animator smoothAnimation;
+
+    private String mPaymentDescription;
 
     public PaymentDialogFragment() {
         // Required empty public constructor
@@ -132,9 +136,9 @@ public class PaymentDialogFragment extends DialogFragment {
         return inflatedView;
     }
 
-    public void onPaymentDone(Integer result) {
+    public void onPaymentDone(String result, String externalUniqueNumber) {
         if (mListener != null) {
-            mListener.onPaymentDone(result);
+            mListener.onPaymentDone(result, mExternalUniqueNumber);
         }
     }
 
@@ -159,7 +163,7 @@ public class PaymentDialogFragment extends DialogFragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void onPaymentDone(Integer result);
+        void onPaymentDone(String result, String externalUniqueNumber);
     }
 
     @Override
@@ -169,12 +173,15 @@ public class PaymentDialogFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
                 Log.d("POS", "transaction_result");
                 HashMap data = (HashMap) intent.getSerializableExtra("data");
-                String paymentDescription = (String) data.get("description");
 
-                if (paymentDescription != null && paymentDescription.equals("OK")){
-                    showPaymentInfo();
-                } else {
-                    showError();
+                if (data.get("occ").equals(mOcc)) {
+                    mPaymentDescription = (String) data.get("description");
+
+                    if (mPaymentDescription != null && mPaymentDescription.equals("OK")) {
+                        showPaymentInfo();
+                    } else {
+                        showError();
+                    }
                 }
 
                 Log.d("POS", data.toString());
@@ -199,6 +206,10 @@ public class PaymentDialogFragment extends DialogFragment {
             mCountDownTimer.cancel();
 
         View currentView = getView();
+
+        Button cancelButton = currentView.findViewById(R.id.cancelButton);
+        cancelButton.setText("Cerrar y continuar");
+
         View mPaidView = currentView.findViewById(R.id.error_constraintLayout);
         final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
 
@@ -231,6 +242,10 @@ public class PaymentDialogFragment extends DialogFragment {
             mCountDownTimer.cancel();
 
         View currentView = getView();
+
+        Button cancelButton = currentView.findViewById(R.id.cancelButton);
+        cancelButton.setText("Cerrar y continuar");
+
         View mPaidView = currentView.findViewById(R.id.paid_constraintLayout);
         final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
 
@@ -296,5 +311,11 @@ public class PaymentDialogFragment extends DialogFragment {
                         mLoadingView.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        onPaymentDone(mPaymentDescription, mExternalUniqueNumber);
     }
 }

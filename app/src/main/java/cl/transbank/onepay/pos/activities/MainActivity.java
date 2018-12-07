@@ -1,9 +1,10 @@
 package cl.transbank.onepay.pos.activities;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.databinding.ActivityMainBinding;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
 
         final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
         binding.setCafePrice(1);
         binding.setMedialunaPrice(2);
         binding.setSandwichPrice(3);
@@ -146,7 +149,45 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
     }
 
     @Override
-    public void onPaymentDone(Integer result) {
+    public void onPaymentDone(String result, String externalUniqueNumber) {
+        String paymentStatus;
+        String mExternalUniqueNumberMessage = "Número de compra: ";
 
+        String items = "Items comprados:\n";
+
+        String alertMessage = "";
+
+        if (result == null) {
+            paymentStatus = "El pago no ha finalizado o no fue exitoso. Reintenta nuevamente";
+            alertMessage = paymentStatus;
+        } else if(result.equals("OK")) {
+            paymentStatus = "¡El pago fue exitoso!";
+            mExternalUniqueNumberMessage += externalUniqueNumber;
+
+            if (buttonPressed[0] == true) {
+                items += "Café\n";
+            }
+            if (buttonPressed[1] == true) {
+                items += "Sandwich\n";
+            }
+            if (buttonPressed[2] == true) {
+                items += "Muffin\n";
+            }
+            if (buttonPressed[3] == true) {
+                items += "Medialuna\n";
+            }
+
+            alertMessage = paymentStatus + "\n" + mExternalUniqueNumberMessage + "\n\n"+ items;
+
+        } else {
+            paymentStatus = "Hubo un error al intentar realizar el cobro. Reintenta nuevamente";
+            alertMessage = paymentStatus;
+        }
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Resultado de compra")
+                .setMessage(alertMessage)
+                .setNegativeButton("Cerrar", null)
+                .show();
     }
 }

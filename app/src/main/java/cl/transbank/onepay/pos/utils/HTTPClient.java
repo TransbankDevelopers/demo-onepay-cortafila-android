@@ -14,7 +14,7 @@ import cl.transbank.onepay.pos.model.Item;
 
 public class HTTPClient {
 
-    static String BASE_URL = "http://fa6e3983.ngrok.io";
+    static String BASE_URL = "https://cortafilas-onepay.herokuapp.com";
 
     public interface HTTPClientListener {
         public void onCompleted(JsonObject result);
