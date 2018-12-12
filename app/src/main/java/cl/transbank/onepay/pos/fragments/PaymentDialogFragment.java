@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.security.keystore.StrongBoxUnavailableException;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -53,7 +52,7 @@ public class PaymentDialogFragment extends DialogFragment {
     private String mPaymentDescription;
 
     public PaymentDialogFragment() {
-        // Required empty public constructor
+
     }
 
     public static PaymentDialogFragment newInstance(ArrayList<Item> items) {
@@ -78,7 +77,6 @@ public class PaymentDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         final View inflatedView = inflater.inflate(R.layout.fragment_payment_dialog, container, false);
@@ -93,6 +91,11 @@ public class PaymentDialogFragment extends DialogFragment {
         HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
             @Override
             public void onCompleted(JsonObject result) {
+                if (result == null) {
+                    dismiss();
+                    return;
+                }
+
                 mOcc = result.getAsJsonPrimitive("occ").getAsString();
                 mExternalUniqueNumber = result.getAsJsonPrimitive("externalUniqueNumber").getAsString();
                 showQR(result.getAsJsonPrimitive("ott").getAsString(), inflatedView);
@@ -110,17 +113,16 @@ public class PaymentDialogFragment extends DialogFragment {
 
                 mCountDownTimer = new CountDownTimer(totalTime, 300) {
                     @Override
-                    public void onTick(long millisUntilFinished) {
-
-                    }
+                    public void onTick(long millisUntilFinished) { }
 
                     @Override
                     public void onFinish() {
                         waitingProgressBar.setProgress(0);
                         dismiss();
+
                         new AlertDialog.Builder(getActivity())
-                                .setTitle("¡Ups!")
-                                .setMessage("Ha transcurrido el tiempo límite para hacer el pago, inténtalo nuevamente.")
+                                .setTitle(R.string.error_title)
+                                .setMessage(R.string.time_limit_passed)
                                 .setNegativeButton("Okey", null)
                                 .show();
 
@@ -138,7 +140,7 @@ public class PaymentDialogFragment extends DialogFragment {
 
     public void onPaymentDone(String result, String externalUniqueNumber) {
         if (mListener != null) {
-            mListener.onPaymentDone(result, mExternalUniqueNumber);
+            mListener.onPaymentDone(result, externalUniqueNumber);
         }
     }
 
@@ -208,7 +210,7 @@ public class PaymentDialogFragment extends DialogFragment {
         View currentView = getView();
 
         Button cancelButton = currentView.findViewById(R.id.cancelButton);
-        cancelButton.setText("Cerrar y continuar");
+        cancelButton.setText(R.string.close_and_continue);
 
         View mPaidView = currentView.findViewById(R.id.error_constraintLayout);
         final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
@@ -244,13 +246,13 @@ public class PaymentDialogFragment extends DialogFragment {
         View currentView = getView();
 
         Button cancelButton = currentView.findViewById(R.id.cancelButton);
-        cancelButton.setText("Cerrar y continuar");
+        cancelButton.setText(R.string.close_and_continue);
 
         View mPaidView = currentView.findViewById(R.id.paid_constraintLayout);
         final View mPaymentView = currentView.findViewById(R.id.payment_constraintLayout);
 
         TextView mExternalUniqueNumberTextView = currentView.findViewById(R.id.external_unique_number_textview);
-        mExternalUniqueNumberTextView.setText("Número de compra: "+ mExternalUniqueNumber);
+        mExternalUniqueNumberTextView.setText(getString(R.string.buy_order) + " " + mExternalUniqueNumber);
         mPaidView.setAlpha(0f);
         mPaidView.setVisibility(View.VISIBLE);
 

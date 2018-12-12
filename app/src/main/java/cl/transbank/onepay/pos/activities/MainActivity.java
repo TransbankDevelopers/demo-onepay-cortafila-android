@@ -1,6 +1,5 @@
 package cl.transbank.onepay.pos.activities;
 
-import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
@@ -8,13 +7,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.databinding.ActivityMainBinding;
 import cl.transbank.onepay.pos.fragments.PaymentDialogFragment;
@@ -46,18 +41,26 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         binding.pagarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getSupportFragmentManager();
 
-                ArrayList<Item> items = getSelectedItems(binding);
+                if (HTTPClient.isOnline(MainActivity.this)) {
+                    FragmentManager fm = getSupportFragmentManager();
 
-                PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
+                    ArrayList<Item> items = getSelectedItems(binding);
 
-                paymentDialogFragment.show(fm, "fragment_edit_name");
+                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
+
+                    paymentDialogFragment.show(fm, "fragment_edit_name");
+                } else {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("¡Error!")
+                            .setMessage("No hay conexión a internet disponible, reintenta nuevamente.")
+                            .setNegativeButton("Cerrar", null)
+                            .show();
+                }
+
             }
         });
     }
-
-
 
     public ArrayList<Item> getSelectedItems(ActivityMainBinding binding) {
         ArrayList<Item> items = new ArrayList<>();

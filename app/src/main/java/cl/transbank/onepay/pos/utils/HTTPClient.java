@@ -1,6 +1,8 @@
 package cl.transbank.onepay.pos.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -63,5 +65,16 @@ public class HTTPClient {
                         }
                     }
                 });
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        boolean connected = networkInfo != null && networkInfo.isAvailable() &&
+                networkInfo.isConnected();
+
+        return connected;
     }
 }
