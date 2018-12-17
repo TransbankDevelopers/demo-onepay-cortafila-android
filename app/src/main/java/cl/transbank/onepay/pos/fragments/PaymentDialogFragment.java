@@ -102,16 +102,16 @@ public class PaymentDialogFragment extends DialogFragment {
 
                 final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
-                final int totalTime = 90000;
-                waitingProgressBar.setMax(totalTime);
-                waitingProgressBar.setProgress(totalTime);
+                final int totalTimeMillisecs = 90000;
+                waitingProgressBar.setMax(totalTimeMillisecs);
+                waitingProgressBar.setProgress(totalTimeMillisecs);
 
-                smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTime, 0);
+                smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTimeMillisecs, 0);
 
-                smoothAnimation.setDuration(totalTime);
+                smoothAnimation.setDuration(totalTimeMillisecs);
                 smoothAnimation.setInterpolator(new LinearInterpolator());
 
-                mCountDownTimer = new CountDownTimer(totalTime, 300) {
+                mCountDownTimer = new CountDownTimer(totalTimeMillisecs, 300) {
                     @Override
                     public void onTick(long millisUntilFinished) { }
 
