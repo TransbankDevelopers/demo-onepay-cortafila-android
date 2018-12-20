@@ -10,16 +10,37 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import cl.transbank.onepay.pos.model.Item;
 
 public class HTTPClient {
 
-    static String BASE_URL = "https://cortafilas-onepay.herokuapp.com";
+    static String BASE_URL;
 
     public interface HTTPClientListener {
         public void onCompleted(JsonObject result);
+    }
+
+    private static String getBaseURL(Context context)  {
+
+        if (BASE_URL == null) {
+            Properties properties = new Properties();
+            InputStream inputStream = null;
+            try {
+                inputStream = context.getAssets().open("app.properties");
+                properties.load(inputStream);
+                BASE_URL = properties.getProperty("server_url");
+            } catch (IOException e) {
+                e.printStackTrace();
+                BASE_URL = "https://cortafilas-onepay.herokuapp.com";
+            }
+        }
+
+        return BASE_URL;
     }
 
     public static void sendRegistrationToServer(String token, Context context, final HTTPClientListener callback) {
@@ -28,7 +49,7 @@ public class HTTPClient {
         json.addProperty("token", token);
 
         Ion.with(context)
-                .load(BASE_URL + "/setup/register")
+                .load(getBaseURL(context) + "/setup/register")
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
@@ -53,7 +74,7 @@ public class HTTPClient {
         json.add("items", jsonElement);
 
         Ion.with(context)
-                .load(BASE_URL + "/transaction/"+ deviceid + "/create")
+                .load(getBaseURL(context) + "/transaction/"+ deviceid + "/create")
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {

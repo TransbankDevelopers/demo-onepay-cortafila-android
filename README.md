@@ -22,7 +22,7 @@ Escanea el código QR utilizando la aplicación oficial Onepay, autoriza el pago
 
 ## Instrucciones para ejecución en ambiente de desarrollo
 
-- Debes indicarle a la aplicación Android la ruta en donde está alojada la aplicación backend. Para esto, debes modificar el archivo `HTTPClient.java` en `app/src/main/java/cl/transbank/onepay/pos/utils`. Debes modificar la variable `BASE_URL`, para apuntar al dominio o IP correspondiente.
+- Debes indicarle a la aplicación Android la ruta en donde está alojada la aplicación backend. Para esto, debes modificar el archivo `app.properties` en `app/src/main/assets`. Debes modificar la variable `server_url`, para apuntar al dominio o IP correspondiente.
 
 - Por otro lado, es necesario configurar Firebase para poder recepcionar notificaciones push con el estado de la transacción. Para ello, debes dirigirte a la [Consola de Firebase](https://console.firebase.google.com), crear un proyecto, para luego ir a Project Overview y Configuración del Proyecto. Ve a `Añade Firebase a tu aplicación de Android`, ingresa el nombre del paquete (por defecto es `cl.transbank.onepay.pos`, descarga el archivo `google-services.json`, y cópialo en la carpeta /app de la aplicación.
 
