@@ -44,11 +44,8 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 if (HTTPClient.isOnline(MainActivity.this)) {
                     FragmentManager fm = getSupportFragmentManager();
-
                     ArrayList<Item> items = getSelectedItems(binding);
-
                     PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
-
                     paymentDialogFragment.show(fm, "fragment_edit_name");
                 } else {
                     new AlertDialog.Builder(MainActivity.this)
