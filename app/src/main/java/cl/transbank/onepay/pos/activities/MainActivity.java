@@ -24,39 +24,12 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseApp.initializeApp(this);
-
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
-
         final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        binding.setCafePrice(1);
-        binding.setMedialunaPrice(2);
-        binding.setSandwichPrice(3);
-        binding.setMuffinPrice(4);
-
+        initFirebase();
         initializeUI(binding);
+        setProductPrices(binding);
 
-        binding.pagarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (HTTPClient.isOnline(MainActivity.this)) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    ArrayList<Item> items = getSelectedItems(binding);
-                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
-                    paymentDialogFragment.show(fm, "fragment_edit_name");
-                } else {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("¡Error!")
-                            .setMessage("No hay conexión a internet disponible, reintenta nuevamente.")
-                            .setNegativeButton("Cerrar", null)
-                            .show();
-                }
-
-            }
-        });
     }
 
     public ArrayList<Item> getSelectedItems(ActivityMainBinding binding) {
@@ -146,6 +119,40 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
                 setPayButtonStatus(binding);
             }
         });
+
+        binding.pagarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (HTTPClient.isOnline(MainActivity.this)) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    ArrayList<Item> items = getSelectedItems(binding);
+                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
+                    paymentDialogFragment.show(fm, "fragment_edit_name");
+                } else {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("¡Error!")
+                            .setMessage("No hay conexión a internet disponible, reintenta nuevamente.")
+                            .setNegativeButton("Cerrar", null)
+                            .show();
+                }
+
+            }
+        });
+    }
+
+    private void initFirebase() {
+        FirebaseApp.initializeApp(this);
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
+    }
+
+    private void setProductPrices(ActivityMainBinding binding) {
+        binding.setCafePrice(1);
+        binding.setMedialunaPrice(2);
+        binding.setSandwichPrice(3);
+        binding.setMuffinPrice(4);
     }
 
     @Override
