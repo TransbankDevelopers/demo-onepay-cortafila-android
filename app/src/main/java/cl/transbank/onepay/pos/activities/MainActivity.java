@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         ArrayList<Item> items = new ArrayList<>();
 
         for (int i = 0; i < buttonPressed.length; i++) {
-            if (buttonPressed[i] == true) {
+            if (buttonPressed[i]) {
                 Item item = null;
                 switch (i) {
                     case 0:
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
     private void setPayButtonStatus(ActivityMainBinding binding) {
         for (int i = 0; i < buttonPressed.length; i++) {
-            if (buttonPressed[i] == true) {
+            if (buttonPressed[i]) {
                 binding.pagarButton.setEnabled(true);
                 return;
             }
@@ -171,16 +171,16 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
             paymentStatus = "¡El pago fue exitoso!";
             mExternalUniqueNumberMessage += externalUniqueNumber;
 
-            if (buttonPressed[0] == true) {
+            if (buttonPressed[0]) {
                 items += "Café\n";
             }
-            if (buttonPressed[1] == true) {
+            if (buttonPressed[1]) {
                 items += "Sandwich\n";
             }
-            if (buttonPressed[2] == true) {
+            if (buttonPressed[2]) {
                 items += "Muffin\n";
             }
-            if (buttonPressed[3] == true) {
+            if (buttonPressed[3]) {
                 items += "Medialuna\n";
             }
 
