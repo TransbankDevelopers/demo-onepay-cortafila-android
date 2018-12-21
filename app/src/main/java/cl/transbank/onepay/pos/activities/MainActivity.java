@@ -157,6 +157,14 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
     @Override
     public void onPaymentDone(String result, String externalUniqueNumber) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Resultado de compra")
+                .setMessage(getAlertMessageFromResult(result, externalUniqueNumber))
+                .setNegativeButton("Cerrar", null)
+                .show();
+    }
+
+    private String getAlertMessageFromResult(String result, String externalUniqueNumber) {
         String paymentStatus;
         String mExternalUniqueNumberMessage = "Número de compra: ";
 
@@ -191,10 +199,6 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
             alertMessage = paymentStatus;
         }
 
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Resultado de compra")
-                .setMessage(alertMessage)
-                .setNegativeButton("Cerrar", null)
-                .show();
+        return alertMessage;
     }
 }
