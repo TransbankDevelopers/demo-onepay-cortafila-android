@@ -99,43 +99,45 @@ public class PaymentDialogFragment extends DialogFragment {
                 mOcc = result.getAsJsonPrimitive("occ").getAsString();
                 mExternalUniqueNumber = result.getAsJsonPrimitive("externalUniqueNumber").getAsString();
                 showQR(result.getAsJsonPrimitive("ott").getAsString(), inflatedView);
-
-                final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
-
-                final int totalTimeMillisecs = 90000;
-                waitingProgressBar.setMax(totalTimeMillisecs);
-                waitingProgressBar.setProgress(totalTimeMillisecs);
-
-                smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTimeMillisecs, 0);
-
-                smoothAnimation.setDuration(totalTimeMillisecs);
-                smoothAnimation.setInterpolator(new LinearInterpolator());
-
-                mCountDownTimer = new CountDownTimer(totalTimeMillisecs, 300) {
-                    @Override
-                    public void onTick(long millisUntilFinished) { }
-
-                    @Override
-                    public void onFinish() {
-                        waitingProgressBar.setProgress(0);
-                        dismiss();
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle(R.string.error_title)
-                                .setMessage(R.string.time_limit_passed)
-                                .setNegativeButton("Okey", null)
-                                .show();
-
-                        smoothAnimation.end();
-
-                    }
-                }.start();
-                smoothAnimation.start();
-
+                initializeAlertDialogUI(inflatedView);
             }
         });
 
         return inflatedView;
+    }
+
+    private void initializeAlertDialogUI(View inflatedView) {
+        final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
+
+        final int totalTimeMillisecs = 90000;
+        waitingProgressBar.setMax(totalTimeMillisecs);
+        waitingProgressBar.setProgress(totalTimeMillisecs);
+
+        smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTimeMillisecs, 0);
+
+        smoothAnimation.setDuration(totalTimeMillisecs);
+        smoothAnimation.setInterpolator(new LinearInterpolator());
+
+        mCountDownTimer = new CountDownTimer(totalTimeMillisecs, 300) {
+            @Override
+            public void onTick(long millisUntilFinished) { }
+
+            @Override
+            public void onFinish() {
+                waitingProgressBar.setProgress(0);
+                dismiss();
+
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.error_title)
+                        .setMessage(R.string.time_limit_passed)
+                        .setNegativeButton("Okey", null)
+                        .show();
+
+                smoothAnimation.end();
+
+            }
+        }.start();
+        smoothAnimation.start();
     }
 
     public void onPaymentDone(String result, String externalUniqueNumber) {
