@@ -3,6 +3,7 @@ package cl.transbank.onepay.pos.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -35,7 +36,7 @@ public class HTTPClient {
                 properties.load(inputStream);
                 BASE_URL = properties.getProperty("server_url");
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.i("Cortafilas", "No server_url property, using the default hardcoded value");
                 BASE_URL = "https://cortafilas-onepay.herokuapp.com";
             }
         }
