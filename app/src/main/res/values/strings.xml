@@ -1,7 +1,11 @@
 <resources>
-    <string name="app_name">POS</string>
+    <string name="app_name">Demo Cortafilas Onepay</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_payment">Escanea el <b>código QR</b> con la\napp <b>Onepay</b> de tu celular</string>
+    <string name="close_and_continue">Cerrar y continuar</string>
+    <string name="buy_order">Número de compra: </string>
+    <string name="error_title">¡Ups!</string>
+    <string name="time_limit_passed">Ha transcurrido el tiempo límite para hacer el pago, inténtalo nuevamente.</string>
 </resources>

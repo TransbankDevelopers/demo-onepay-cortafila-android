@@ -2,14 +2,19 @@ package cl.transbank.onepay.pos.activities;
 
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import java.util.ArrayList;
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.databinding.ActivityMainBinding;
 import cl.transbank.onepay.pos.fragments.PaymentDialogFragment;
+import cl.transbank.onepay.pos.model.Item;
+import cl.transbank.onepay.pos.utils.HTTPClient;
 
 public class MainActivity extends AppCompatActivity implements PaymentDialogFragment.OnFragmentInteractionListener {
 
@@ -18,25 +23,54 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setCafePrice(1500);
-        binding.setMedialunaPrice(500);
-        binding.setSandwichPrice(3000);
-        binding.setMuffinPrice(1000);
 
+        final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        initFirebase();
         initializeUI(binding);
+        setProductPrices(binding);
 
-        binding.pagarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fm = getSupportFragmentManager();
-                PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(null);
-                paymentDialogFragment.show(fm, "fragment_edit_name");
-            }
-        });
     }
 
-    private void initializeUI(ActivityMainBinding binding) {
+    public ArrayList<Item> getSelectedItems(ActivityMainBinding binding) {
+        ArrayList<Item> items = new ArrayList<>();
+
+        for (int i = 0; i < buttonPressed.length; i++) {
+            if (buttonPressed[i]) {
+                Item item = null;
+                switch (i) {
+                    case 0:
+                        item = new Item("Cafe", 1, binding.getCafePrice(), null, 0);
+                        break;
+                    case 1:
+                        item = new Item("Sandwich", 1, binding.getSandwichPrice(), null, 0);
+                        break;
+                    case 2:
+                        item = new Item("Muffin", 1, binding.getMuffinPrice(), null, 0);
+                        break;
+                    case 3:
+                        item = new Item("Medialuna", 1, binding.getMedialunaPrice(), null, 0);
+                        break;
+                }
+                items.add(item);
+            }
+        }
+        return items;
+    }
+
+    private void setPayButtonStatus(ActivityMainBinding binding) {
+        for (int i = 0; i < buttonPressed.length; i++) {
+            if (buttonPressed[i]) {
+                binding.pagarButton.setEnabled(true);
+                return;
+            }
+
+        }
+
+        binding.pagarButton.setEnabled(false);
+    }
+
+    private void initializeUI(final ActivityMainBinding binding) {
         final ActivityMainBinding finalBinding = binding;
 
         final Drawable normalButtonDrawable = getResources().getDrawable(R.color.normalButton);
@@ -49,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getCafePrice() * (buttonPressed[0] ? -1 : 1)));
                 buttonPressed[0] = !buttonPressed[0];
+                setPayButtonStatus(binding);
             }
         });
 
@@ -59,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getSandwichPrice() * (buttonPressed[1] ? -1 : 1)));
                 buttonPressed[1] = !buttonPressed[1];
+                setPayButtonStatus(binding);
             }
         });
 
@@ -69,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getMuffinPrice() * (buttonPressed[2] ? -1 : 1)));
                 buttonPressed[2] = !buttonPressed[2];
+                setPayButtonStatus(binding);
             }
         });
 
@@ -79,12 +116,89 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
                 finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getMedialunaPrice() * (buttonPressed[3] ? -1 : 1)));
                 buttonPressed[3] = !buttonPressed[3];
+                setPayButtonStatus(binding);
+            }
+        });
+
+        binding.pagarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (HTTPClient.isOnline(MainActivity.this)) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    ArrayList<Item> items = getSelectedItems(binding);
+                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
+                    paymentDialogFragment.show(fm, "fragment_edit_name");
+                } else {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("¡Error!")
+                            .setMessage("No hay conexión a internet disponible, reintenta nuevamente.")
+                            .setNegativeButton("Cerrar", null)
+                            .show();
+                }
+
             }
         });
     }
 
-    @Override
-    public void onPaymentDone(Integer result) {
+    private void initFirebase() {
+        FirebaseApp.initializeApp(this);
 
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
+    }
+
+    private void setProductPrices(ActivityMainBinding binding) {
+        binding.setCafePrice(1);
+        binding.setMedialunaPrice(2);
+        binding.setSandwichPrice(3);
+        binding.setMuffinPrice(4);
+    }
+
+    @Override
+    public void onPaymentDone(String result, String externalUniqueNumber) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Resultado de compra")
+                .setMessage(getAlertMessageFromResult(result, externalUniqueNumber))
+                .setNegativeButton("Cerrar", null)
+                .show();
+    }
+
+    private String getAlertMessageFromResult(String result, String externalUniqueNumber) {
+        String paymentStatus;
+        String mExternalUniqueNumberMessage = "Número de compra: ";
+
+        String items = "Items comprados:\n";
+
+        String alertMessage = "";
+
+        if (result == null) {
+            paymentStatus = "El pago no ha finalizado o no fue exitoso. Reintenta nuevamente";
+            alertMessage = paymentStatus;
+        } else if(result.equals("OK")) {
+            paymentStatus = "¡El pago fue exitoso!";
+            mExternalUniqueNumberMessage += externalUniqueNumber;
+
+            if (buttonPressed[0]) {
+                items += "Café\n";
+            }
+            if (buttonPressed[1]) {
+                items += "Sandwich\n";
+            }
+            if (buttonPressed[2]) {
+                items += "Muffin\n";
+            }
+            if (buttonPressed[3]) {
+                items += "Medialuna\n";
+            }
+
+            alertMessage = paymentStatus + "\n" + mExternalUniqueNumberMessage + "\n\n"+ items;
+
+        } else {
+            paymentStatus = "Hubo un error al intentar realizar el cobro. Reintenta nuevamente";
+            alertMessage = paymentStatus;
+        }
+
+        return alertMessage;
     }
 }
