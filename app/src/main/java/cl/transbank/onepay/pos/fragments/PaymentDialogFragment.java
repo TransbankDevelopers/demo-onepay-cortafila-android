@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.model.Item;
 import cl.transbank.onepay.pos.utils.HTTPClient;
+import cl.transbank.onepay.pos.utils.KeyValuePersistence;
 import cl.transbank.onepay.pos.utils.StringFormatter;
 
 public class PaymentDialogFragment extends DialogFragment {
@@ -46,6 +48,8 @@ public class PaymentDialogFragment extends DialogFragment {
 
     private String mOcc;
     private String mExternalUniqueNumber;
+    private String mOtt;
+    private Long totalTimeMillisecsLeft;
     private CountDownTimer mCountDownTimer;
     private Animator smoothAnimation;
 
@@ -75,6 +79,18 @@ public class PaymentDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (outState != null) {
+            outState.putString("mOcc", mOcc);
+            outState.putString("mOtt", mOtt);
+            outState.putString("mExternalUniqueNumber", mExternalUniqueNumber);
+            outState.putLong("totalTimeMillisecsLeft", totalTimeMillisecsLeft);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -89,20 +105,32 @@ public class PaymentDialogFragment extends DialogFragment {
             }
         });
 
-        HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
-            @Override
-            public void onCompleted(JsonObject result) {
-                if (result == null) {
-                    dismiss();
-                    return;
-                }
+        if (savedInstanceState != null) {
+            mOcc = savedInstanceState.getString("mOcc");
+            mExternalUniqueNumber = savedInstanceState.getString("mExternalUniqueNumber");
+            mOtt = savedInstanceState.getString("mOtt");
+            totalTimeMillisecsLeft = savedInstanceState.getLong("totalTimeMillisecsLeft");
 
-                mOcc = result.getAsJsonPrimitive("occ").getAsString();
-                mExternalUniqueNumber = result.getAsJsonPrimitive("externalUniqueNumber").getAsString();
-                showQR(result.getAsJsonPrimitive("ott").getAsString(), inflatedView);
-                initializeAlertDialogUI(inflatedView);
-            }
-        });
+            showQR(mOtt, inflatedView);
+            initializeAlertDialogUI(inflatedView);
+        } else {
+            HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
+                @Override
+                public void onCompleted(JsonObject result) {
+                    if (result == null) {
+                        dismiss();
+                        return;
+                    }
+
+                    mOcc = result.getAsJsonPrimitive("occ").getAsString();
+                    mExternalUniqueNumber = result.getAsJsonPrimitive("externalUniqueNumber").getAsString();
+                    mOtt = result.getAsJsonPrimitive("ott").getAsString();
+
+                    showQR(mOtt, inflatedView);
+                    initializeAlertDialogUI(inflatedView);
+                }
+            });
+        }
 
         return inflatedView;
     }
@@ -111,17 +139,25 @@ public class PaymentDialogFragment extends DialogFragment {
         final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
         final int totalTimeMillisecs = 90000;
-        waitingProgressBar.setMax(totalTimeMillisecs);
-        waitingProgressBar.setProgress(totalTimeMillisecs);
 
-        smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", totalTimeMillisecs, 0);
+        if (totalTimeMillisecsLeft == null) {
+            totalTimeMillisecsLeft = new Long(totalTimeMillisecs);
+        }
+
+        int mTimeLeftMills = totalTimeMillisecsLeft.intValue();
+        waitingProgressBar.setMax(totalTimeMillisecs);
+        waitingProgressBar.setProgress(mTimeLeftMills);
+
+        smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", mTimeLeftMills, 0);
 
         smoothAnimation.setDuration(totalTimeMillisecs);
         smoothAnimation.setInterpolator(new LinearInterpolator());
 
-        mCountDownTimer = new CountDownTimer(totalTimeMillisecs, 300) {
+        mCountDownTimer = new CountDownTimer(mTimeLeftMills, 300) {
             @Override
-            public void onTick(long millisUntilFinished) { }
+            public void onTick(long millisUntilFinished) {
+                totalTimeMillisecsLeft = millisUntilFinished;
+            }
 
             @Override
             public void onFinish() {
@@ -171,35 +207,58 @@ public class PaymentDialogFragment extends DialogFragment {
         void onPaymentDone(String result, String externalUniqueNumber);
     }
 
+    public void parseResult(HashMap data) {
+        if (data.get("occ").equals(mOcc)) {
+            mPaymentDescription = (String) data.get("description");
+
+            if (mPaymentDescription != null && mPaymentDescription.equals("OK")) {
+                showPaymentInfo();
+            } else {
+                showError();
+            }
+        }
+
+        Log.d("POS", data.toString());
+        KeyValuePersistence.clearLastPayment(getContext());
+    }
+
     @Override
     public void onResume() {
-        br = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("POS", "transaction_result");
-                HashMap data = (HashMap) intent.getSerializableExtra("data");
 
-                if (data.get("occ").equals(mOcc)) {
-                    mPaymentDescription = (String) data.get("description");
-
-                    if (mPaymentDescription != null && mPaymentDescription.equals("OK")) {
-                        showPaymentInfo();
-                    } else {
-                        showError();
-                    }
+        HashMap paymentHashMap = KeyValuePersistence.getLastPayment(getContext());
+        
+        if (paymentHashMap != null) {
+            parseResult(paymentHashMap);
+        } else {
+            br = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    Log.d("POS", "transaction_result");
+                    HashMap data = (HashMap) intent.getSerializableExtra("data");
+                    parseResult(data);
                 }
+            };
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(br, new IntentFilter(("transaction_result")));
+        }
 
-                Log.d("POS", data.toString());
-            }
-        };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(br, new IntentFilter(("transaction_result")));
         super.onResume();
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
     }
 
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(br);
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
         super.onPause();
     }
 
@@ -291,13 +350,11 @@ public class PaymentDialogFragment extends DialogFragment {
         int mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_longAnimTime);
 
-        View currentView = getView();
-
-        TextView ottTextView = currentView.findViewById(R.id.buycode_textView);
+        TextView ottTextView = inflatedView.findViewById(R.id.buycode_textView);
 
         ottTextView.setText(StringFormatter.formatOtt(ott));
-        View mContentView = currentView.findViewById(R.id.payment_constraintLayout);
-        final View mLoadingView = currentView.findViewById(R.id.loading_constraintLayout);
+        View mContentView = inflatedView.findViewById(R.id.payment_constraintLayout);
+        final View mLoadingView = inflatedView.findViewById(R.id.loading_constraintLayout);
 
         mContentView.setAlpha(0f);
         mContentView.setVisibility(View.VISIBLE);
