@@ -96,7 +96,7 @@ public class PaymentDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getDialog().setCancelable(false);
+        setCancelable(false);
 
         final View inflatedView = inflater.inflate(R.layout.fragment_payment_dialog, container, false);
         Button cancelButton = inflatedView.findViewById(R.id.cancelButton);
