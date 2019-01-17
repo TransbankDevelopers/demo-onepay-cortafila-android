@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -49,11 +48,12 @@ public class PaymentDialogFragment extends DialogFragment {
     private String mOcc;
     private String mExternalUniqueNumber;
     private String mOtt;
-    private Long totalTimeMillisecsLeft;
-    private CountDownTimer mCountDownTimer;
+    private Integer totalTimeMillisecsLeft;
     private Animator smoothAnimation;
 
     private String mPaymentDescription;
+
+    ProgressBar waitingProgressBar;
 
     public PaymentDialogFragment() {
 
@@ -83,10 +83,12 @@ public class PaymentDialogFragment extends DialogFragment {
         super.onSaveInstanceState(outState);
 
         if (outState != null) {
+            totalTimeMillisecsLeft = waitingProgressBar.getProgress();
+
             outState.putString("mOcc", mOcc);
             outState.putString("mOtt", mOtt);
             outState.putString("mExternalUniqueNumber", mExternalUniqueNumber);
-            outState.putLong("totalTimeMillisecsLeft", totalTimeMillisecsLeft);
+            outState.putInt("totalTimeMillisecsLeft", totalTimeMillisecsLeft);
         }
     }
 
@@ -109,10 +111,9 @@ public class PaymentDialogFragment extends DialogFragment {
             mOcc = savedInstanceState.getString("mOcc");
             mExternalUniqueNumber = savedInstanceState.getString("mExternalUniqueNumber");
             mOtt = savedInstanceState.getString("mOtt");
-            totalTimeMillisecsLeft = savedInstanceState.getLong("totalTimeMillisecsLeft");
+            totalTimeMillisecsLeft = savedInstanceState.getInt("totalTimeMillisecsLeft");
 
             showQR(mOtt, inflatedView);
-            initializeAlertDialogUI(inflatedView);
         } else {
             HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
                 @Override
@@ -127,7 +128,6 @@ public class PaymentDialogFragment extends DialogFragment {
                     mOtt = result.getAsJsonPrimitive("ott").getAsString();
 
                     showQR(mOtt, inflatedView);
-                    initializeAlertDialogUI(inflatedView);
                 }
             });
         }
@@ -136,32 +136,30 @@ public class PaymentDialogFragment extends DialogFragment {
     }
 
     private void initializeAlertDialogUI(View inflatedView) {
-        final ProgressBar waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
+        waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
         final int totalTimeMillisecs = 90000;
 
         if (totalTimeMillisecsLeft == null) {
-            totalTimeMillisecsLeft = new Long(totalTimeMillisecs);
+            System.out.println(totalTimeMillisecsLeft);
+            totalTimeMillisecsLeft = totalTimeMillisecs;
         }
 
-        int mTimeLeftMills = totalTimeMillisecsLeft.intValue();
+        int mTimeLeftMills = totalTimeMillisecsLeft;
         waitingProgressBar.setMax(totalTimeMillisecs);
         waitingProgressBar.setProgress(mTimeLeftMills);
 
         smoothAnimation = ObjectAnimator.ofInt(waitingProgressBar, "progress", mTimeLeftMills, 0);
 
-        smoothAnimation.setDuration(totalTimeMillisecs);
+        smoothAnimation.setDuration(mTimeLeftMills);
         smoothAnimation.setInterpolator(new LinearInterpolator());
 
-        mCountDownTimer = new CountDownTimer(mTimeLeftMills, 300) {
+        smoothAnimation.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onTick(long millisUntilFinished) {
-                totalTimeMillisecsLeft = millisUntilFinished;
-            }
+            public void onAnimationStart(Animator animation) {}
 
             @Override
-            public void onFinish() {
-                waitingProgressBar.setProgress(0);
+            public void onAnimationEnd(Animator animation) {
                 dismiss();
 
                 new AlertDialog.Builder(getActivity())
@@ -169,11 +167,15 @@ public class PaymentDialogFragment extends DialogFragment {
                         .setMessage(R.string.time_limit_passed)
                         .setNegativeButton("Okey", null)
                         .show();
-
-                smoothAnimation.end();
-
             }
-        }.start();
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+
         smoothAnimation.start();
     }
 
@@ -198,9 +200,6 @@ public class PaymentDialogFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
-        }
     }
 
     public interface OnFragmentInteractionListener {
@@ -224,7 +223,7 @@ public class PaymentDialogFragment extends DialogFragment {
 
     @Override
     public void onResume() {
-
+        initializeAlertDialogUI(getView());
         HashMap paymentHashMap = KeyValuePersistence.getLastPayment(getContext());
         
         if (paymentHashMap != null) {
@@ -247,27 +246,14 @@ public class PaymentDialogFragment extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
-        }
-    }
-
-    @Override
-    public void onPause() {
+        if (smoothAnimation != null)
+            smoothAnimation.pause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(br);
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
-        }
-        super.onPause();
     }
-
 
     private void showError() {
         if (smoothAnimation != null)
             smoothAnimation.cancel();
-        if (mCountDownTimer != null)
-            mCountDownTimer.cancel();
 
         View currentView = getView();
 
@@ -302,8 +288,6 @@ public class PaymentDialogFragment extends DialogFragment {
     private void showPaymentInfo() {
         if (smoothAnimation != null)
             smoothAnimation.cancel();
-        if (mCountDownTimer != null)
-            mCountDownTimer.cancel();
 
         View currentView = getView();
 
