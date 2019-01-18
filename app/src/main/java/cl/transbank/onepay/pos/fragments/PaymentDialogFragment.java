@@ -55,6 +55,8 @@ public class PaymentDialogFragment extends DialogFragment {
 
     ProgressBar waitingProgressBar;
 
+    private boolean isPaymentProcessed = false;
+
     public PaymentDialogFragment() {
 
     }
@@ -160,13 +162,15 @@ public class PaymentDialogFragment extends DialogFragment {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                dismiss();
+                if (!isPaymentProcessed) {
+                    dismiss();
 
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.error_title)
-                        .setMessage(R.string.time_limit_passed)
-                        .setNegativeButton("Okey", null)
-                        .show();
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.error_title)
+                            .setMessage(R.string.time_limit_passed)
+                            .setNegativeButton("Okey", null)
+                            .show();
+                }
             }
 
             @Override
@@ -207,6 +211,7 @@ public class PaymentDialogFragment extends DialogFragment {
     }
 
     public void parseResult(HashMap data) {
+        isPaymentProcessed = true;
         if (data.get("occ").equals(mOcc)) {
             mPaymentDescription = (String) data.get("description");
 
