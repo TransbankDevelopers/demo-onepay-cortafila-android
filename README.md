@@ -18,7 +18,7 @@ Escanea el código QR utilizando la aplicación oficial Onepay, autoriza el pago
 ## Requisitos para ambiente de desarrollo
 
 - Android Studio
-- [Aplicación backend ejecutándose](https://github.com/TransbankDevelopers/transbank-demo-cortafilas-backend-onepay), que crea y confirma la transacción. (En caso que quieras prescindir de esto, puedes ocupar la que ocupamos actualmente: https://cortafilas-onepay.herokuapp.com
+- [Aplicación backend ejecutándose](https://github.com/TransbankDevelopers/transbank-example-cortafilas-backend-onepay), que crea y confirma la transacción. (En caso que quieras prescindir de esto, puedes ocupar la que ocupamos actualmente: https://cortafilas-onepay.herokuapp.com
 
 ## Instrucciones para ejecución en ambiente de desarrollo
 
