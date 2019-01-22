@@ -6,7 +6,7 @@ android {
         applicationId "cl.transbank.onepay.pos"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 7
+        versionCode 8
         versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
