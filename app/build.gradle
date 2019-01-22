@@ -36,6 +36,9 @@ dependencies {
 
     implementation 'com.koushikdutta.ion:ion:2.+'
 
+    implementation 'com.google.zxing:core:3.3.0'
+    implementation('com.journeyapps:zxing-android-embedded:3.6.0') { transitive = false }
+
     implementation project(':onepay-release')
 }
 
