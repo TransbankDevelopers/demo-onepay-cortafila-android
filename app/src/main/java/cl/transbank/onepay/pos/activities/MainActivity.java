@@ -1,133 +1,80 @@
 package cl.transbank.onepay.pos.activities;
 
-import android.databinding.DataBindingUtil;
-import android.graphics.drawable.Drawable;
+
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import java.util.ArrayList;
 import cl.transbank.onepay.pos.R;
-import cl.transbank.onepay.pos.databinding.ActivityMainBinding;
+import cl.transbank.onepay.pos.adapters.CheckRecyclerViewAdapter;
 import cl.transbank.onepay.pos.fragments.PaymentDialogFragment;
-import cl.transbank.onepay.pos.model.Item;
+import cl.transbank.onepay.pos.model.Cart;
+import cl.transbank.onepay.pos.utils.CartHelper;
+import cl.transbank.onepay.pos.utils.Constants;
+import cl.transbank.onepay.pos.utils.CurrencyFormat;
 import cl.transbank.onepay.pos.utils.HTTPClient;
+import cl.transbank.onepay.pos.utils.SimpleDividerItemDecoration;
 
-public class MainActivity extends AppCompatActivity implements PaymentDialogFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements PaymentDialogFragment.OnFragmentInteractionListener, CheckRecyclerViewAdapter.OnUpdateClickedListener {
 
-    boolean[] buttonPressed = {false, false, false, false};
+    private RecyclerView checkRecyclerView;
+    private CheckRecyclerViewAdapter mAdapter;
+    private TextView subTotal;
+    private Button pay;
+    // get content of cart
+    final Cart cart = CartHelper.getCart();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        final ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
+        setContentView(R.layout.activity_main);
         initFirebase();
-        initializeUI(binding);
-        setProductPrices(binding);
-
+        initializeUI();
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    public ArrayList<Item> getSelectedItems(ActivityMainBinding binding) {
-        ArrayList<Item> items = new ArrayList<>();
+    private void initializeUI() {
 
-        for (int i = 0; i < buttonPressed.length; i++) {
-            if (buttonPressed[i]) {
-                Item item = null;
-                switch (i) {
-                    case 0:
-                        item = new Item("Cafe", 1, binding.getCafePrice(), null, 0);
-                        break;
-                    case 1:
-                        item = new Item("Sandwich", 1, binding.getSandwichPrice(), null, 0);
-                        break;
-                    case 2:
-                        item = new Item("Muffin", 1, binding.getMuffinPrice(), null, 0);
-                        break;
-                    case 3:
-                        item = new Item("Medialuna", 1, binding.getMedialunaPrice(), null, 0);
-                        break;
-                }
-                items.add(item);
-            }
-        }
-        return items;
-    }
+        subTotal = findViewById(R.id.amount_textView);
+        pay = findViewById(R.id.pagar_button);
 
-    private void setPayButtonStatus(ActivityMainBinding binding) {
-        for (int i = 0; i < buttonPressed.length; i++) {
-            if (buttonPressed[i]) {
-                binding.pagarButton.setEnabled(true);
-                return;
-            }
+        checkRecyclerView = findViewById(R.id.checkout_list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this);
+        checkRecyclerView.setLayoutManager(linearLayoutManager);
+        checkRecyclerView.setHasFixedSize(true);
+        checkRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(MainActivity.this));
 
-        }
+        mAdapter = new CheckRecyclerViewAdapter(MainActivity.this, cart);
+        mAdapter.setOnUpdateClickedListener(this);
+        checkRecyclerView.setAdapter(mAdapter);
 
-        binding.pagarButton.setEnabled(false);
-    }
+        subTotal.setText(String.valueOf(cart.getTotalPrice()));
 
-    private void initializeUI(final ActivityMainBinding binding) {
-        final ActivityMainBinding finalBinding = binding;
-
-        final Drawable normalButtonDrawable = getResources().getDrawable(R.color.normalButton);
-        final Drawable pressedButtonDrawable = getResources().getDrawable(R.drawable.pressed_button_drawable);
-
-        binding.cafeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalBinding.cafeButton.setBackground(buttonPressed[0] ? normalButtonDrawable : pressedButtonDrawable);
-
-                finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getCafePrice() * (buttonPressed[0] ? -1 : 1)));
-                buttonPressed[0] = !buttonPressed[0];
-                setPayButtonStatus(binding);
-            }
-        });
-
-        binding.sandwichButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalBinding.sandwichButton.setBackground(buttonPressed[1] ? normalButtonDrawable : pressedButtonDrawable);
-
-                finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getSandwichPrice() * (buttonPressed[1] ? -1 : 1)));
-                buttonPressed[1] = !buttonPressed[1];
-                setPayButtonStatus(binding);
-            }
-        });
-
-        binding.muffinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalBinding.muffinButton.setBackground(buttonPressed[2] ? normalButtonDrawable : pressedButtonDrawable);
-
-                finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getMuffinPrice() * (buttonPressed[2] ? -1 : 1)));
-                buttonPressed[2] = !buttonPressed[2];
-                setPayButtonStatus(binding);
-            }
-        });
-
-        binding.medialunaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalBinding.medialunaButton.setBackground(buttonPressed[3] ? normalButtonDrawable : pressedButtonDrawable);
-
-                finalBinding.setAmount(finalBinding.getAmount() + (finalBinding.getMedialunaPrice() * (buttonPressed[3] ? -1 : 1)));
-                buttonPressed[3] = !buttonPressed[3];
-                setPayButtonStatus(binding);
-            }
-        });
-
-        binding.pagarButton.setOnClickListener(new View.OnClickListener() {
+        assert pay != null;
+        pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (HTTPClient.isOnline(MainActivity.this)) {
                     FragmentManager fm = getSupportFragmentManager();
-                    ArrayList<Item> items = getSelectedItems(binding);
-                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(items);
+
+                    PaymentDialogFragment paymentDialogFragment = PaymentDialogFragment.newInstance(cart.getProducts());
                     paymentDialogFragment.show(fm, "fragment_edit_name");
                 } else {
                     new AlertDialog.Builder(MainActivity.this)
@@ -139,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
             }
         });
+        setPayButtonStatus();
     }
 
     private void initFirebase() {
@@ -148,12 +96,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         HTTPClient.sendRegistrationToServer(refreshedToken, this, null);
     }
 
-    private void setProductPrices(ActivityMainBinding binding) {
-        binding.setCafePrice(1);
-        binding.setMedialunaPrice(2);
-        binding.setSandwichPrice(3);
-        binding.setMuffinPrice(4);
-    }
+
 
     @Override
     public void onPaymentDone(String result, String externalUniqueNumber) {
@@ -170,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
         String items = "Items comprados:\n";
 
-        String alertMessage = "";
+        String alertMessage;
 
         if (result == null) {
             paymentStatus = "El pago no ha finalizado o no fue exitoso. Reintenta nuevamente";
@@ -178,21 +121,10 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
         } else if(result.equals("OK")) {
             paymentStatus = "¡El pago fue exitoso!";
             mExternalUniqueNumberMessage += externalUniqueNumber;
-
-            if (buttonPressed[0]) {
-                items += "Café\n";
-            }
-            if (buttonPressed[1]) {
-                items += "Sandwich\n";
-            }
-            if (buttonPressed[2]) {
-                items += "Muffin\n";
-            }
-            if (buttonPressed[3]) {
-                items += "Medialuna\n";
-            }
+            items += cart.toString();
 
             alertMessage = paymentStatus + "\n" + mExternalUniqueNumberMessage + "\n\n"+ items;
+            clearCartAndRedirectHome();
 
         } else {
             paymentStatus = "Hubo un error al intentar realizar el cobro. Reintenta nuevamente";
@@ -201,4 +133,56 @@ public class MainActivity extends AppCompatActivity implements PaymentDialogFrag
 
         return alertMessage;
     }
+
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
+    @Override
+    public void updateView(String msg) {
+        subTotal.setText(CurrencyFormat.formatBigDecimalToCurrency(CartHelper.getCart().getTotalPrice()));
+        setPayButtonStatus();
+    }
+
+    private void setPayButtonStatus() {
+        if(CartHelper.getCart().getTotalPrice().intValue()>0){
+            pay.setEnabled(true);
+            return;
+        }
+        pay.setEnabled(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+                // app icon in action bar clicked; go home
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void clearCartAndRedirectHome(){
+        cart.clear();
+        Toast.makeText(MainActivity.this, Constants.MASSAGE_REDIRECT, Toast.LENGTH_LONG).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                Intent i=new Intent(MainActivity.this,CategoryActivity.class);
+                startActivity(i);
+            }
+        }, 10000);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mAdapter.updateCartItems();
+        this.updateView("");
+
+    }
+
 }

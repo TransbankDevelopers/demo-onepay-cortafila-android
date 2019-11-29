@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.CategoryActivity">
+
+    <ImageButton
+        android:id="@+id/cine_btn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="@dimen/_100dp"
+        android:layout_marginTop="78dp"
+        android:onClick="openMovieView"
+        app:layout_constraintStart_toEndOf="@id/left_part_img"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/block_cines_2" />
+
+    <ImageButton
+        android:id="@+id/gym_btn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="200dp"
+        android:onClick="openGymView"
+        app:layout_constraintBottom_toBottomOf="@id/cine_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cine_btn"
+        app:layout_constraintTop_toTopOf="@id/cine_btn"
+        app:srcCompat="@drawable/block_gimnasios" />
+
+    <ImageButton
+        android:id="@+id/other_btn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        android:onClick="openOtherView"
+        app:layout_constraintStart_toStartOf="@id/cine_btn"
+        app:layout_constraintTop_toBottomOf="@id/cine_btn"
+        app:srcCompat="@drawable/block_otros" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/massage_btn"
+        app:layout_constraintVertical_bias="0.851"
+        app:srcCompat="@drawable/logo_convenios_small" />
+
+    <ImageView
+        android:id="@+id/left_part_img"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/left_bar" />
+
+    <ImageButton
+        android:id="@+id/massage_btn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="24dp"
+        android:onClick="openMassageView"
+        app:layout_constraintStart_toStartOf="@id/gym_btn"
+        app:layout_constraintTop_toBottomOf="@id/gym_btn"
+        app:srcCompat="@drawable/block_masajes" />
+</android.support.constraint.ConstraintLayout>

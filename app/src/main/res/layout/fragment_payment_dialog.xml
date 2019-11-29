@@ -133,7 +133,7 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                 />
+                />
 
             <TextView
                 android:id="@+id/textView"
@@ -219,7 +219,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tienes 1 minuto y medio para \nefectuar el pago"
+                android:text="Tienes 10 minutos  para \nefectuar el pago"
                 android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@id/waiting_progress_bar"
                 app:layout_constraintEnd_toEndOf="parent"

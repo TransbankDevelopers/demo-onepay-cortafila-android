@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.OtherActivity">
+
+    <TextView
+        android:id="@+id/other_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/other_title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/other_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/other_qty_lbl"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_desc_lbl" />
+
+    <TextView
+        android:id="@+id/other_desc_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/other_desc_lbl"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_title" />
+
+    <TextView
+        android:id="@+id/other_qty_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/other_qty"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_desc" />
+
+    <EditText
+        android:id="@+id/other_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_qty_lbl"
+        android:inputType="number|none"/>
+
+    <TextView
+        android:id="@+id/other_amount_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/other_amount_lbl"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_qty" />
+
+    <EditText
+        android:id="@+id/other_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:ems="10"
+        android:inputType="number|none"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_amount_lbl" />
+
+    <ImageView
+        android:id="@+id/convenios_logo"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button"
+        app:srcCompat="@drawable/logo_convenios_small" />
+
+    <Button
+        android:id="@+id/other_add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/buttonShopping"
+        android:text="@string/other_continue_btn"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        app:layout_constraintStart_toStartOf="@id/other_title"
+        app:layout_constraintTop_toBottomOf="@id/other_amount" />
+
+</android.support.constraint.ConstraintLayout>

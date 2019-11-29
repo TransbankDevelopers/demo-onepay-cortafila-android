@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import cl.transbank.onepay.pos.model.Item;
+import cl.transbank.onepay.pos.model.ItemImpl;
 
 public class HTTPClient {
 
@@ -64,15 +64,18 @@ public class HTTPClient {
                 });
     }
 
-    public static void createTransaction(ArrayList<Item> mItems, Context context, final HTTPClientListener callback) {
+    public static void createTransaction(ArrayList<ItemImpl> mItemImpls, Context context, final HTTPClientListener callback) {
         JsonObject json = new JsonObject();
         String deviceid = DeviceUUID.getUUID(context);
 
         Gson gson = new Gson();
-        JsonElement jsonElement = gson.toJsonTree(mItems);
+        JsonElement jsonElement = gson.toJsonTree(mItemImpls);
 
         json.addProperty("deviceid", DeviceUUID.getUUID(context));
+        json.addProperty("commerceLogoUrl", Constants.LOGO_URL);
         json.add("items", jsonElement);
+
+
 
         Ion.with(context)
                 .load(getBaseURL(context) + "/transaction/"+ deviceid + "/create")

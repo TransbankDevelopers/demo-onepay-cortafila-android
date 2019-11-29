@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.GymActivity">
+
+    <TextView
+        android:id="@+id/gym_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/gym_price"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/smartfit_logo"
+        app:layout_constraintTop_toBottomOf="@id/gym_plan" />
+
+    <TextView
+        android:id="@+id/gym_onepay"
+        android:layout_width="365dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/cine_onepay"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/smartfit_logo"
+        app:layout_constraintTop_toBottomOf="@id/gym_price" />
+
+    <TextView
+        android:id="@+id/gym_choose"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        android:text="@string/gym_choose"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/smartfit_logo"
+        app:layout_constraintTop_toBottomOf="@id/gym_onepay" />
+
+    <ImageButton
+        android:id="@+id/smartfit_logo"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/smartfif_logo_off"
+        app:layout_constraintStart_toEndOf="@id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/sportlife_logo"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/sportlife_logo_off"
+        app:layout_constraintLeft_toRightOf="@id/smartfit_logo"
+        app:layout_constraintRight_toLeftOf="@id/energy_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/energy_logo"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/energy_logo_off"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/smartfit_logo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/gym_cantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/gym_minus_qty"
+        app:layout_constraintTop_toBottomOf="@id/gym_choose" />
+
+    <ImageView
+        android:id="@+id/gym_add_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/bt_plus"
+        app:layout_constraintLeft_toRightOf="@id/gym_cantidad"
+        app:layout_constraintStart_toEndOf="@id/gym_cantidad"
+        app:layout_constraintTop_toBottomOf="@id/gym_choose" />
+
+    <ImageView
+        android:id="@+id/gym_minus_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/gym_choose"
+        app:layout_constraintTop_toBottomOf="@id/gym_choose"
+        app:srcCompat="@drawable/bt_minus" />
+
+    <ImageView
+        android:id="@+id/convenio_logo"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/logo_convenios_small"
+        tools:layout_constraintTop_toBottomOf="@id/cinemark_logo" />
+
+    <Button
+        android:id="@+id/open_cart_btn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/backgroundOnepay"
+        android:onClick="openMainView"
+        android:text="@string/check_btn"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="@id/smartfit_logo"
+        app:layout_constraintTop_toBottomOf="@id/gym_minus_qty" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="450dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/gym_onepay"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/left_gym" />
+
+    <TextView
+        android:id="@+id/gym_plan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/gym_plan"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/smartfit_logo"
+        app:layout_constraintTop_toBottomOf="@id/smartfit_logo" />
+
+</android.support.constraint.ConstraintLayout>

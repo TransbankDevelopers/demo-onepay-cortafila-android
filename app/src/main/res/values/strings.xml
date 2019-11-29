@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Demo Cortafilas Onepay</string>
+    <string name="app_name">Cortafilas Onepay</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -8,4 +8,36 @@
     <string name="buy_order">Número de compra: </string>
     <string name="error_title">¡Ups!</string>
     <string name="time_limit_passed">Ha transcurrido el tiempo límite para hacer el pago, inténtalo nuevamente.</string>
+    <string name="title_activity_category">CategoryActivity</string>
+    <string name="cine_promocion_txt">Combo de bebida mas cabrita pequeña</string>
+    <string name="cine_price">$2.500</string>
+    <string name="cine_onepay">Aprovecha estos descuentos pagando con Onepay</string>
+    <string name="cine_elige">Elige tu cine de preferencia</string>
+    <string name="cine_continue">Continuar</string>
+    <string name="cine_terms">Promocion valida  hasta el 31 de diciembre de 2019</string>
+    <string name="gym_promotion_txt">Plan de 6 meses.</string>
+    <string name="gym_choose">Elige el plan que mejor se acomode a tus necesidades</string>
+    <string name="gym_price">$0</string>
+    <string name="other_title">Otros Convenios</string>
+    <string name="other_desc">Descripcion</string>
+    <string name="other_desc_lbl">Descripcion</string>
+    <string name="other_qty">Cantidad</string>
+    <string name="other_amount_lbl">Monto</string>
+    <string name="other_continue_btn">Continuar</string>
+    <string name="quantity">1</string>
+    <string name="product_name">Entrada cine</string>
+    <string name="price">$2500</string>
+    <string name="remove_from_cart">Eliminar</string>
+    <string name="action_cart">cart</string>
+    <string name="add_to_cart">Agregar</string>
+    <string name="price_sign">$</string>
+    <string name="gym_plan" />
+    <string name="check_btn">Ir al carro</string>
+    <string name="onepay">onepay</string>
+    <string name="cine_ticket">Entrada</string>
+    <string name="cine_popcorn">Combo bebida y cabritas</string>
+    <string name="cine_qty">0</string>
+    <string name="massage_price">$2.500</string>
+    <string name="massage_prom">Compra un masaje de 15 minutos pagando con Onepay</string>
+    <string name="massage_lbl">Masaje (15 minutos)</string>
 </resources>

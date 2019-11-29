@@ -29,6 +29,7 @@ import java.util.HashMap;
 import cl.ionix.tbk_ewallet_sdk_android.ui.QROnepayView;
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.model.Item;
+import cl.transbank.onepay.pos.model.ItemImpl;
 import cl.transbank.onepay.pos.utils.HTTPClient;
 import cl.transbank.onepay.pos.utils.KeyValuePersistence;
 import cl.transbank.onepay.pos.utils.StringFormatter;
@@ -36,7 +37,7 @@ import cl.transbank.onepay.pos.utils.StringFormatter;
 public class PaymentDialogFragment extends DialogFragment {
     private static final String ARG_ITEMS = "items";
 
-    private ArrayList<Item> mItems;
+    private ArrayList<ItemImpl> mItemImpls;
 
     private OnFragmentInteractionListener mListener;
 
@@ -71,7 +72,7 @@ public class PaymentDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mItems = getArguments().getParcelableArrayList(ARG_ITEMS);
+            mItemImpls = getArguments().getParcelableArrayList(ARG_ITEMS);
         }
 
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Light_Dialog);
@@ -114,7 +115,7 @@ public class PaymentDialogFragment extends DialogFragment {
 
             showQR(mOtt, inflatedView);
         } else {
-            HTTPClient.createTransaction(mItems, getContext(), new HTTPClient.HTTPClientListener() {
+            HTTPClient.createTransaction(mItemImpls, getContext(), new HTTPClient.HTTPClientListener() {
                 @Override
                 public void onCompleted(JsonObject result) {
                     if (result == null) {
@@ -137,7 +138,7 @@ public class PaymentDialogFragment extends DialogFragment {
     private void initializeAlertDialogUI(View inflatedView) {
         waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
-        final int totalTimeMillisecs = 90000;
+        final int totalTimeMillisecs = 600000;
 
         if (totalTimeMillisecsLeft == null) {
             System.out.println(totalTimeMillisecsLeft);

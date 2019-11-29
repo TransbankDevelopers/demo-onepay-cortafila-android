@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.MovieActivity">
+
+    <TextView
+        android:id="@+id/cine_prom"
+        android:layout_width="550sp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        android:text="@string/cine_onepay"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/imageView3"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cineplanet_logo" />
+
+    <TextView
+        android:id="@+id/cine_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/cine_price"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_ticket" />
+
+    <TextView
+        android:id="@+id/cine_ticket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/cine_ticket"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_popcorn" />
+
+    <ImageButton
+        android:id="@+id/cineplanet_logo"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/cineplanet_logo"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/cinehoyts_logo"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/cine_hoyts"
+        app:layout_constraintLeft_toRightOf="@id/cineplanet_logo"
+        app:layout_constraintRight_toLeftOf="@id/cinemark_logo"
+        app:layout_constraintTop_toTopOf="@id/cineplanet_logo" />
+
+    <ImageButton
+        android:id="@+id/cinemark_logo"
+        android:layout_width="220dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/cine_mark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cinehoyts_logo"
+        app:layout_constraintTop_toTopOf="@id/cineplanet_logo" />
+
+    <TextView
+        android:id="@+id/cine_cantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/cine_qty"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/cine_minus_qty"
+        app:layout_constraintTop_toBottomOf="@id/cine_price" />
+
+    <ImageView
+        android:id="@+id/cine_add_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/bt_plus"
+        app:layout_constraintLeft_toRightOf="@id/cine_cantidad"
+        app:layout_constraintStart_toEndOf="@id/cine_cantidad"
+        app:layout_constraintTop_toBottomOf="@id/cine_price" />
+
+    <ImageView
+        android:id="@+id/cine_minus_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_price"
+        app:srcCompat="@drawable/bt_minus" />
+
+    <ImageView
+        android:id="@+id/convenio_logo"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/logo_convenios_small" />
+
+    <Button
+        android:id="@+id/check_btn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/backgroundOnepay"
+        android:onClick="openMainView"
+        android:text="@string/check_btn"
+        android:textColor="@color/common_google_signin_btn_text_dark_default"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_add_qty" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="450dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/left_part_cine" />
+
+    <ImageView
+        android:id="@+id/cine_popcorn"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="60dp"
+        app:layout_constraintLeft_toRightOf="@id/cine_ticket_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_prom"
+        app:srcCompat="@drawable/item_popcorn" />
+
+    <ImageView
+        android:id="@+id/cine_ticket_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toStartOf="@id/cineplanet_logo"
+        app:layout_constraintTop_toBottomOf="@id/cine_prom"
+        app:srcCompat="@drawable/item_ticket" />
+
+    <TextView
+        android:id="@+id/cine_popcorn_lbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cine_popcorn"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/cine_popcorn"
+        app:layout_constraintTop_toBottomOf="@id/cine_popcorn" />
+
+    <TextView
+        android:id="@+id/cine_price2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cine_price"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/cine_popcorn"
+        app:layout_constraintTop_toBottomOf="@id/cine_popcorn_lbl" />
+
+    <ImageView
+        android:id="@+id/cine_minus_qty_2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/cine_popcorn"
+        app:layout_constraintTop_toBottomOf="@id/cine_price2"
+        app:srcCompat="@drawable/bt_minus" />
+
+    <TextView
+        android:id="@+id/cine_cantidad_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/cine_qty"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/cine_minus_qty_2"
+        app:layout_constraintTop_toBottomOf="@id/cine_price2" />
+
+    <ImageView
+        android:id="@+id/cine_plus_qty_2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toRightOf="@id/cine_cantidad_2"
+        app:layout_constraintTop_toBottomOf="@id/cine_price2"
+        app:srcCompat="@drawable/bt_plus" />
+
+</android.support.constraint.ConstraintLayout>

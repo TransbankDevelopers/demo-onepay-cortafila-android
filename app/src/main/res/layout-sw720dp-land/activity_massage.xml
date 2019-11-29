@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".activities.MassageActivity">
+
+    <TextView
+        android:id="@+id/massage_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/massage_price"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/massage_prom"
+        app:layout_constraintTop_toBottomOf="@id/massage_lbl" />
+
+    <TextView
+        android:id="@+id/massage_lbl"
+        android:layout_width="365dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/massage_lbl"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/massage_prom"
+        app:layout_constraintTop_toBottomOf="@id/massage_prom" />
+
+    <TextView
+        android:id="@+id/massage_prom"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="150dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        android:text="@string/massage_prom"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/left_part_massage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/massage_cantidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:text="0"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toRightOf="@id/massage_minus_qty"
+        app:layout_constraintTop_toBottomOf="@id/massage_price" />
+
+    <ImageView
+        android:id="@+id/massage_add_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/bt_plus"
+        app:layout_constraintLeft_toRightOf="@id/massage_cantidad"
+        app:layout_constraintStart_toEndOf="@id/massage_cantidad"
+        app:layout_constraintTop_toBottomOf="@id/massage_price" />
+
+    <ImageView
+        android:id="@+id/massage_minus_qty"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/massage_prom"
+        app:layout_constraintTop_toBottomOf="@id/massage_price"
+        app:srcCompat="@drawable/bt_minus" />
+
+    <ImageView
+        android:id="@+id/convenio_logo"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/logo_convenios_small"
+        tools:layout_constraintTop_toBottomOf="@id/cinemark_logo" />
+
+    <Button
+        android:id="@+id/open_cart_btn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/backgroundOnepay"
+        android:onClick="openMainView"
+        android:text="@string/check_btn"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toStartOf="@id/massage_prom"
+        app:layout_constraintTop_toBottomOf="@id/massage_minus_qty" />
+
+    <ImageView
+        android:id="@+id/left_part_massage"
+        android:layout_width="450dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/left_masajes" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CategoryActivity">
+
+    <ImageButton
+        android:id="@+id/cine_btn"
+        android:layout_width="180dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="78dp"
+        android:onClick="openMovieView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/block_cines" />
+
+    <ImageButton
+        android:id="@+id/gym_btn"
+        android:layout_width="180dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="openGymView"
+        app:layout_constraintBottom_toBottomOf="@id/cine_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/cine_btn"
+        app:layout_constraintTop_toTopOf="@id/cine_btn"
+        app:srcCompat="@drawable/gym" />
+
+    <ImageButton
+        android:id="@+id/other_btn"
+        android:layout_width="180dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:onClick="openOtherView"
+        app:layout_constraintStart_toStartOf="@id/cine_btn"
+        app:layout_constraintTop_toBottomOf="@+id/cine_btn"
+        app:srcCompat="@drawable/block_otros"
+        tools:layout_constraintStart_toStartOf="@id/imageButton"
+        tools:layout_constraintTop_toBottomOf="@id/imageButton" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gym_btn"
+        app:layout_constraintVertical_bias="0.785"
+        app:srcCompat="@drawable/logo_convenios_small" />
+</android.support.constraint.ConstraintLayout>
