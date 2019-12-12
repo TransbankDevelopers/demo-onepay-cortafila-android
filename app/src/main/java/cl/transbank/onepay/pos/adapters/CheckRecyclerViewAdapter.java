@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.math.BigDecimal;
+
 import cl.transbank.onepay.pos.R;
 import cl.transbank.onepay.pos.model.Cart;
 import cl.transbank.onepay.pos.model.Item;
@@ -43,7 +46,7 @@ public class CheckRecyclerViewAdapter extends RecyclerView.Adapter<CheckRecycler
         //get product quantity
         holder.quantity.setText(String.valueOf(cart.getProducts().get(position).getQuantity()));
         holder.productName.setText(cart.getProducts().get(position).getDescription());
-        holder.productPrice.setText(CurrencyFormat.formatBigDecimalToCurrency(cart.getProducts().get(position).getAmount()));
+        holder.productPrice.setText(CurrencyFormat.formatBigDecimalToCurrency(cart.getProducts().get(position).getAmount().multiply(new BigDecimal(cart.getProducts().get(position).getQuantity()))));
 
         switch (cart.getProducts().get(position).getKey()){
             case 1:

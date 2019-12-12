@@ -138,7 +138,7 @@ public class PaymentDialogFragment extends DialogFragment {
     private void initializeAlertDialogUI(View inflatedView) {
         waitingProgressBar = inflatedView.findViewById(R.id.waiting_progress_bar);
 
-        final int totalTimeMillisecs = 600000;
+        final int totalTimeMillisecs = 90000;
 
         if (totalTimeMillisecsLeft == null) {
             System.out.println(totalTimeMillisecsLeft);
